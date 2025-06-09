@@ -1,117 +1,91 @@
-import { useState } from 'react';
-import axios from 'axios';
-import './questify.css';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import Home from './home.js';
+import Dashboard from './dashboard.js';
+import FocusTraining from './FocusTraining.js';
+import Shop from './Shop.js';
+import './App.css';
+import { useUser } from './data/UserFileStore';
 
-export default function QuestifyApp() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [userData, setUserData] = useState(null);
-  const [newTask, setNewTask] = useState('');
+function App() {
+    const {
+      user,
+      isAuthenticated,
+      isLoading,
+      error,
+      tasks,
+      stats,
+      login,
+      register,
+      logout,
+      addTask,
+      completeTask,
+      deleteTask,
+      clearError
+    } = useUser();
 
-  const fetchUser = async () => {
-    try {
-      const res = await axios.post(`https://backend-questify.onrender.com/api/users/login`, {
-        username,
-        password
-      });
-      setUserData(res.data);
-    } catch (err) {
-      console.error(err);
-      alert('Invalid username or password');
-    }
-  };
+  const location = useLocation();
+  const [userXP, setUserXP] = useState(() => {
+    return parseInt(localStorage.getItem('userXP') || '0');
+  });
+  const [showBonusPopup, setShowBonusPopup] = useState(false);
+  const [bonusXP, setBonusXP] = useState(null);
 
-  const createUser = async () => {
-    if (password.length < 4) {
-      alert('Password must be at least 4 characters long');
-      return;
-    }
+  // Save XP to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('userXP', userXP.toString());
+  }, [userXP]);
 
-    try {
-      const res = await axios.post(`https://backend-questify.onrender.com/api/users`, {
-        username,
-        password
-      });
-      setUserData(res.data);
-    } catch (err) {
-      console.error(err);
-      alert('Could not create user - username might already exist');
-    }
-  };
+  // Random XP every 5 mins
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const bonus = Math.floor(Math.random() * 81) + 20; // 20–100 XP
+      setUserXP(prev => prev + bonus);
+      setBonusXP(bonus);
+      setShowBonusPopup(true);
+      setTimeout(() => setShowBonusPopup(false), 4000);
+    }, 30000); // 5 minutes
 
-  const addTask = async () => {
-    const res = await axios.post(`https://backend-questify.onrender.com/api/users/${username}/tasks`, {
-      title: newTask,
-      description: 'Auto-generated',
-      dueDate: new Date()
-    });
-    setUserData(res.data);
-    setNewTask('');
-  };
-
-  const completeTask = async (taskId) => {
-    const res = await axios.put(`https://backend-questify.onrender.com/api/users/${username}/tasks/${taskId}/complete`);
-    setUserData(res.data);
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="container">
-
-      {!userData && (
-        <div>
-          <h1 className="title">🎯 Questify</h1>
-          <div className="user-controls">
-            <input
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="Enter username"
-              className="input"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className="input"
-            />
-            <button onClick={fetchUser} className="button login">Login</button>
-            <button onClick={createUser} className="button create">Create</button>
+    <div className="App">
+      <header className="App-header">
+        <nav className="navbar">
+          <div className="nav-brand">
+            <Link to="/">🎯 Questify</Link>
           </div>
-        </div>
-      )}
-      {userData && (
-        <div className="user-panel">
-          <p><strong>User:</strong> {userData.username}</p>
-          <p><strong>XP:</strong> {userData.xp}</p>
-          <p><strong>Level:</strong> {userData.level}</p>
-          <p><strong>Completed Tasks:</strong> {userData.completedTasksCount}</p>
-
-          <h2 className="section-title">📝 Tasks</h2>
-          <div className="task-input">
-            <input
-              value={newTask}
-              onChange={e => setNewTask(e.target.value)}
-              placeholder="New Task"
-              className="input"
-            />
-            <button onClick={addTask} className="button add">Add</button>
-          </div>
-
-          <ul className="task-list">
-            {userData.currentTasks.map(task => (
-              <li key={task._id} className={`task-item ${task.completed ? 'completed' : ''}`}>
-                <span>{task.title}</span>
-                {!task.completed && (
-                  <button
-                    onClick={() => completeTask(task._id)}
-                    className="button complete"
-                  >Complete</button>
-                )}
-              </li>
-            ))}
+          <ul className="nav-links">
+            <li>
+              <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
+            </li>
+            <li>
+              <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/focus" className={location.pathname === '/focus' ? 'active' : ''}>Focus Training</Link>
+            </li>
+            <li>
+              <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>Shop</Link>
+            </li>
           </ul>
-        </div>
-      )}
+        </nav>
+      </header>
+
+      <main className="main-content">
+        {showBonusPopup && isAuthenticated && (
+          <div className="bonus-popup">🎁 +{bonusXP} Bonus XP earned!</div>
+        )}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/focus" element={<FocusTraining />} />
+          <Route path="/shop" element={<Shop />} />
+        </Routes>
+      </main>
     </div>
   );
 }
+
+export default App;
