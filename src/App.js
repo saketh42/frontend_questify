@@ -9,7 +9,7 @@ export default function QuestifyApp() {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${username}`);
+      const res = await axios.get(`https://backend-questify.onrender.com/api/users/${username}`);
       setUserData(res.data);
     } catch (err) {
       console.error(err);
@@ -19,7 +19,7 @@ export default function QuestifyApp() {
 
   const createUser = async () => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/users`, { username });
+      const res = await axios.post(`https://backend-questify.onrender.com/api/users`, { username });
       setUserData(res.data);
     } catch (err) {
       console.error(err);
@@ -28,7 +28,7 @@ export default function QuestifyApp() {
   };
 
   const addTask = async () => {
-    const res = await axios.post(`http://localhost:5000/api/users/${username}/tasks`, {
+    const res = await axios.post(`https://backend-questify.onrender.com/api/users/${username}/tasks`, {
       title: newTask,
       description: 'Auto-generated',
       dueDate: new Date()
@@ -38,7 +38,7 @@ export default function QuestifyApp() {
   };
 
   const completeTask = async (taskId) => {
-    const res = await axios.put(`http://localhost:5000/api/users/${username}/tasks/${taskId}/complete`);
+    const res = await axios.put(`https://backend-questify.onrender.com/api/users/${username}/tasks/${taskId}/complete`);
     setUserData(res.data);
   };
 
