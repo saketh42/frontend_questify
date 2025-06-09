@@ -136,7 +136,7 @@ export const UserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
 
   // API base URL
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = 'https://backend-questify.onrender.com/api';
 
   // Actions
   const actions = {
