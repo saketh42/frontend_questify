@@ -8,6 +8,7 @@ import Profile from './Profile.js';
 import ChatBot from './components/ChatBot';
 import './App.css';
 import { useUser } from './data/UserFileStore';
+import { Gamepad2 } from 'lucide-react';
 
 function App() {
     const {
@@ -56,7 +57,14 @@ function App() {
       <header className="App-header">
         <nav className="navbar">
           <div className="nav-brand">
-            <Link to="/">🎯 Questify</Link>
+            <Link to="/">
+              <div className="logo-container">
+                <div className="logo-icon">
+                  <Gamepad2 size={24} />
+                </div>
+                <span className="brand-name">Questify</span>
+              </div>
+            </Link>
           </div>
           <ul className="nav-links">
             <li>
@@ -99,5 +107,6 @@ function App() {
 }
 
 export default App;
+
 
 

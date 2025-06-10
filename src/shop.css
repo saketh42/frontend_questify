@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   min-height: 100vh;
+  background: transparent;
 }
 
 .shop-header {
@@ -13,8 +14,9 @@
 }
 
 .shop-header h1 {
-  color: #2c3e50;
+  color: white;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .user-xp {
@@ -61,23 +63,26 @@
 
 .category-filter button {
   padding: 0.75rem 1.5rem;
-  border: 2px solid #ecf0f1;
-  background: white;
+  border: 2px solid rgba(236, 240, 241, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  color: white;
 }
 
 .category-filter button:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .category-filter button.active {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.8));
   color: white;
-  border-color: #3498db;
+  border-color: rgba(52, 152, 219, 0.4);
 }
 
 .shop-grid {
@@ -88,17 +93,19 @@
 }
 
 .shop-item {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 15px;
   padding: 1.5rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .shop-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .item-header {
@@ -111,7 +118,7 @@
 .item-name {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
   flex: 1;
 }
 
@@ -120,18 +127,18 @@
   font-weight: bold;
   padding: 0.25rem 0.75rem;
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
   border: 1px solid currentColor;
 }
 
 .item-description {
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
   line-height: 1.5;
 }
 
 .item-category {
-  color: #95a5a6;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -187,21 +194,24 @@
 }
 
 .owned-items-section {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .owned-items-section h2 {
-  color: #2c3e50;
+  color: white;
   margin-bottom: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .no-items {
   text-align: center;
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.7);
   font-style: italic;
   padding: 2rem;
 }
@@ -213,53 +223,57 @@
 }
 
 .owned-item {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: rgba(255, 255, 255, 0.15);
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
-  border: 2px solid #3498db;
+  border: 2px solid rgba(52, 152, 219, 0.7);
+  backdrop-filter: blur(10px);
 }
 
 .owned-item-name {
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
 .owned-item-category {
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
 }
 
 .earning-tips {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .earning-tips h3 {
-  color: #2c3e50;
+  color: white;
   margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .earning-tips ul {
   list-style: none;
   padding: 0;
-  color: black
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .earning-tips li {
   padding: 0.75rem 1rem;
   margin: 0.5rem 0;
-  background: linear-gradient(90deg, #ecf0f1, transparent);
+  background: rgba(255, 255, 255, 0.1);
   border-left: 4px solid #f39c12;
   border-radius: 0 10px 10px 0;
   transition: all 0.3s ease;
 }
 
 .earning-tips li:hover {
-  background: linear-gradient(90deg, #d5dbdb, transparent);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateX(5px);
 }
 

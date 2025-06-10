@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   min-height: 100vh;
+  background: transparent;
 }
 
 .focus-header {
@@ -13,7 +14,7 @@
 }
 
 .focus-header h1 {
-  color: #2c3e50;
+  color: white;
   margin: 0;
 }
 
@@ -34,11 +35,13 @@
 }
 
 .pomodoro-container {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .mode-selector {
@@ -107,13 +110,13 @@
 .time {
   font-size: 3rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
   font-family: 'Courier New', monospace;
 }
 
 .mode-label {
   font-size: 1rem;
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.8);
   margin-top: 0.5rem;
 }
 
@@ -165,52 +168,55 @@
 .stat {
   text-align: center;
   padding: 1rem;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .stat-number {
   display: block;
   font-size: 2rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: white;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #7f8c8d;
+  color: rgba(255, 255, 255, 0.8);
   margin-top: 0.5rem;
 }
 
 .focus-tips {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .focus-tips h3 {
-  color: #2c3e50;
+  color: white;
   margin-bottom: 1rem;
 }
 
 .focus-tips ul {
   list-style: none;
   padding: 0;
-  color: black
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .focus-tips li {
   padding: 0.75rem 1rem;
   margin: 0.5rem 0;
-  background: linear-gradient(90deg, #ecf0f1, transparent);
-  border-left: 4px solid #3498db;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #9b59b6;
   border-radius: 0 10px 10px 0;
   transition: all 0.3s ease;
 }
 
 .focus-tips li:hover {
-  background: linear-gradient(90deg, #d5dbdb, transparent);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateX(5px);
 }
 
