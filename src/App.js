@@ -4,6 +4,8 @@ import Home from './home.js';
 import Dashboard from './dashboard.js';
 import FocusTraining from './FocusTraining.js';
 import Shop from './Shop.js';
+import Profile from './Profile.js';
+import ChatBot from './components/ChatBot';
 import './App.css';
 import { useUser } from './data/UserFileStore';
 
@@ -69,6 +71,11 @@ function App() {
             <li>
               <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>Shop</Link>
             </li>
+            {isAuthenticated && (
+              <li>
+                <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>Profile</Link>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
@@ -82,10 +89,15 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/focus" element={<FocusTraining />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
+      
+      <ChatBot />
     </div>
   );
 }
 
 export default App;
+
+

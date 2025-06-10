@@ -13,6 +13,10 @@ const initialState = {
     completedTasks: 0,
     pendingTasks: 0,
     completionRate: 0
+  },
+  dailyTasks: {
+    tasks: [],
+    lastUpdated: null
   }
 };
 
@@ -28,7 +32,8 @@ const actionTypes = {
   UPDATE_TASK: 'UPDATE_TASK',
   DELETE_TASK: 'DELETE_TASK',
   SET_TASKS: 'SET_TASKS',
-  UPDATE_STATS: 'UPDATE_STATS'
+  UPDATE_STATS: 'UPDATE_STATS',
+  SET_DAILY_TASKS: 'SET_DAILY_TASKS'
 };
 
 // Reducer function
@@ -112,6 +117,13 @@ const userReducer = (state, action) => {
       return {
         ...state,
         tasks: filteredTasks
+      };
+
+    case actionTypes.SET_DAILY_TASKS:
+      return {
+        ...state,
+        dailyTasks: action.payload,
+        isLoading: false
       };
 
     default:
@@ -237,27 +249,51 @@ export const UserProvider = ({ children }) => {
       }
     },
 
-deleteTask: async (taskId) => {
-  if (!state.user?.username) return { success: false, error: 'User not authenticated' };
+    deleteTask: async (taskId) => {
+      if (!state.user?.username) return { success: false, error: 'User not authenticated' };
 
-  dispatch({ type: actionTypes.SET_LOADING, payload: true });
+      dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/users/${state.user.username}/tasks/${taskId}`);
+      try {
+        const response = await axios.delete(`${API_BASE_URL}/users/${state.user.username}/tasks/${taskId}`);
 
-    // Dispatch the DELETE_TASK action to update the state
-    dispatch({ type: actionTypes.DELETE_TASK, payload: taskId });
-    
-    // If you need to update the user data completely:
-    // dispatch({ type: actionTypes.UPDATE_USER, payload: response.data });
-    
-    return { success: true, data: response.data };
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Failed to delete task';
-    dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
-    return { success: false, error: errorMessage };
-  }
-},
+        // Update the complete user data from the response
+        dispatch({ type: actionTypes.LOGIN_SUCCESS, payload: response.data });
+        
+        // Also dispatch the DELETE_TASK action to immediately update the UI
+        dispatch({ type: actionTypes.DELETE_TASK, payload: taskId });
+        
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: true, data: response.data };
+      } catch (error) {
+        const errorMessage = error.response?.data?.error || 'Failed to delete task';
+        dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: false, error: errorMessage };
+      }
+    },
+
+    editTask: async (taskId, updatedData) => {
+      if (!state.user?.username) return { success: false, error: 'User not authenticated' };
+
+      dispatch({ type: actionTypes.SET_LOADING, payload: true });
+
+      try {
+        const response = await axios.put(
+          `${API_BASE_URL}/users/${state.user.username}/tasks/${taskId}`, 
+          updatedData
+        );
+
+        dispatch({ type: actionTypes.LOGIN_SUCCESS, payload: response.data });
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: true, data: response.data };
+      } catch (error) {
+        const errorMessage = error.response?.data?.error || 'Failed to update task';
+        dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: false, error: errorMessage };
+      }
+    },
 
     // Utility actions
     clearError: () => {
@@ -272,6 +308,92 @@ deleteTask: async (taskId) => {
         dispatch({ type: actionTypes.UPDATE_USER, payload: response.data });
       } catch (error) {
         console.error('Failed to refresh user data:', error);
+      }
+    },
+
+    getDailyTasks: async () => {
+      if (!state.user?.username) return { success: false, error: 'User not authenticated' };
+
+      dispatch({ type: actionTypes.SET_LOADING, payload: true });
+
+      try {
+        console.log(`Fetching daily tasks for user: ${state.user.username}`);
+        const response = await axios.get(`${API_BASE_URL}/dailyTasks/user/${state.user.username}`);
+        
+        console.log('Daily tasks response:', response.data);
+        dispatch({ 
+          type: actionTypes.SET_DAILY_TASKS, 
+          payload: response.data 
+        });
+        
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: true, data: response.data };
+      } catch (error) {
+        console.error('Error fetching daily tasks:', error);
+        const errorMessage = error.response?.data?.error || 'Failed to fetch daily tasks';
+        dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: false, error: errorMessage };
+      }
+    },
+
+    completeDailyTask: async (taskIndex) => {
+      if (!state.user?.username) return { success: false, error: 'User not authenticated' };
+
+      dispatch({ type: actionTypes.SET_LOADING, payload: true });
+
+      try {
+        console.log(`Completing daily task at index ${taskIndex} for user: ${state.user.username}`);
+        const response = await axios.put(
+          `${API_BASE_URL}/dailyTasks/user/${state.user.username}/complete/${taskIndex}`
+        );
+        
+        console.log('Task completion response:', response.data);
+        
+        // Update both the user data and the daily tasks
+        dispatch({ type: actionTypes.LOGIN_SUCCESS, payload: response.data });
+        
+        // Also update the daily tasks specifically
+        if (response.data.dailyTasks) {
+          dispatch({ 
+            type: actionTypes.SET_DAILY_TASKS, 
+            payload: response.data.dailyTasks 
+          });
+        }
+        
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: true, data: response.data };
+      } catch (error) {
+        console.error('Error completing daily task:', error);
+        const errorMessage = error.response?.data?.error || 'Failed to complete daily task';
+        dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
+        dispatch({ type: actionTypes.SET_LOADING, payload: false });
+        return { success: false, error: errorMessage };
+      }
+    },
+
+    updateUserProfile: async (updateData) => {
+      if (!state.user?.username) return { success: false, error: 'User not authenticated' };
+
+      dispatch({ type: actionTypes.SET_LOADING, payload: true });
+      dispatch({ type: actionTypes.CLEAR_ERROR });
+
+      try {
+        const response = await axios.put(
+          `${API_BASE_URL}/users/${state.user.username}/profile`,
+          updateData
+        );
+
+        dispatch({ type: actionTypes.LOGIN_SUCCESS, payload: response.data });
+        
+        // Update localStorage
+        localStorage.setItem('questifyUser', JSON.stringify(response.data));
+        
+        return { success: true, data: response.data };
+      } catch (error) {
+        const errorMessage = error.response?.data?.error || 'Failed to update profile';
+        dispatch({ type: actionTypes.SET_ERROR, payload: errorMessage });
+        return { success: false, error: errorMessage };
       }
     }
   };
@@ -312,6 +434,7 @@ deleteTask: async (taskId) => {
     error: state.error,
     tasks: state.tasks,
     stats: state.stats,
+    dailyTasks: state.dailyTasks, // Make sure this is included
     
     // Actions
     ...actions

@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useUser } from './data/UserFileStore';
+import DailyTasks from './components/DailyTasks';
 import './questify.css';
 
 export default function Dashboard() {
@@ -7,6 +9,8 @@ export default function Dashboard() {
   const [password, setPassword] = useState('');
   const [newTask, setNewTask] = useState('');
   const [deletingTaskId, setDeletingTaskId] = useState(null); // Track which task is being deleted
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editTaskTitle, setEditTaskTitle] = useState('');
 
   // Use global state
   const {
@@ -22,6 +26,7 @@ export default function Dashboard() {
     addTask,
     completeTask,
     deleteTask,
+    editTask,
     clearError
   } = useUser();
 
@@ -65,6 +70,29 @@ export default function Dashboard() {
       
       if (!result.success) {
         return; // Error is already handled by the deleteTask function
+      }
+    }
+  };
+
+  const handleEditTask = async (taskId) => {
+    if (editingTaskId === taskId) {
+      // Save the edit
+      if (!editTaskTitle.trim()) {
+        setEditingTaskId(null);
+        return;
+      }
+      
+      const result = await editTask(taskId, { title: editTaskTitle.trim() });
+      if (result.success) {
+        setEditingTaskId(null);
+        setEditTaskTitle('');
+      }
+    } else {
+      // Start editing
+      const task = tasks.find(t => t._id === taskId);
+      if (task) {
+        setEditTaskTitle(task.title);
+        setEditingTaskId(taskId);
       }
     }
   };
@@ -125,9 +153,12 @@ export default function Dashboard() {
       ) : (
         <div className="user-panel">
           <div className="user-header">
-            <div className="user-info">
-              <h2>Welcome back, {user.username}! 🎮</h2>
-              <button onClick={handleLogout} className="button logout">
+            <h2>Welcome, {user.username}!</h2>
+            <div className="user-actions">
+              <Link to="/profile" className="button profile">
+                View Profile
+              </Link>
+              <button onClick={logout} className="button logout">
                 Logout
               </button>
             </div>
@@ -151,6 +182,8 @@ export default function Dashboard() {
               <p>{stats.completionRate}%</p>
             </div>
           </div>
+
+          <DailyTasks />
 
           {error && <div className="error-message">{error}</div>}
 
@@ -183,19 +216,45 @@ export default function Dashboard() {
                 {tasks.map(task => (
                   <li key={task._id} className={`task-item ${task.completed ? 'completed' : ''}`}>
                     <div className="task-content">
-                      <span className="task-title">{task.title}</span>
+                      {editingTaskId === task._id ? (
+                        <input
+                          type="text"
+                          value={editTaskTitle}
+                          onChange={(e) => setEditTaskTitle(e.target.value)}
+                          className="input"
+                          autoFocus
+                        />
+                      ) : (
+                        <span className="task-title">{task.title}</span>
+                      )}
                       {task.completed && <span className="completed-badge">✅ Completed</span>}
                     </div>
                     <div className="task-actions">
                       {!task.completed && (
-                        <button
-                          onClick={() => handleCompleteTask(task._id)}
-                          className="button complete"
-                          disabled={isLoading}
-                        >
-                          Complete
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleCompleteTask(task._id)}
+                            className="button complete"
+                            disabled={isLoading || editingTaskId === task._id}
+                          >
+                            Complete
+                          </button>
+                          <button
+                            onClick={() => handleEditTask(task._id)}
+                            className="button edit"
+                            disabled={isLoading || deletingTaskId === task._id}
+                          >
+                            {editingTaskId === task._id ? 'Save' : 'Edit'}
+                          </button>
+                        </>
                       )}
+                      <button
+                        onClick={() => handleDeleteTask(task._id)}
+                        className="button delete"
+                        disabled={isLoading || deletingTaskId === task._id || editingTaskId === task._id}
+                      >
+                        {deletingTaskId === task._id ? 'Deleting...' : 'Delete'}
+                      </button>
                     </div>
                   </li>
                 ))}

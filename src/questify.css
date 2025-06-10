@@ -115,6 +115,29 @@
   font-size: 0.9rem;
 }
 
+.button.retry {
+  background-color: #3498db;
+  color: white;
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+}
+
+.button.profile {
+  background: linear-gradient(45deg, #9b59b6, #8e44ad);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
 .button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -122,14 +145,15 @@
 
 /* Error Message */
 .error-message {
-  background: rgba(244, 67, 54, 0.1);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  color: #ffcdd2;
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  text-align: center;
-  backdrop-filter: blur(10px);
+  background-color: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* User Panel */
@@ -315,6 +339,61 @@
   text-align: center;
   margin: 0;
   font-size: 0.9rem;
+}
+
+/* Daily Tasks Styles */
+.daily-tasks-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.refresh-button {
+  background-color: #9b59b6;
+  color: white;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.refresh-button:disabled {
+  background-color: #d2b4de;
+  cursor: not-allowed;
+}
+
+.refresh-info {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.daily-task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.daily-task-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-task-item.completed {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.4);
 }
 
 /* Responsive Design */
